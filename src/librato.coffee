@@ -32,8 +32,9 @@ librato.flush = ->
   collector.flushTo gauges
   measurement.source = config.source for measurement in gauges when not measurement.source?
   if gauges.length
-    client.send {gauges}, (err) ->
-      librato.emit 'error', err if err?
+    client.send({gauges}).fail((err) ->
+      librato.emit 'error', err
+      throw err)
 
 librato.middleware = middleware(librato)
 
